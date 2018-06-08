@@ -1,0 +1,9 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+<qresource>
+    <file>res/images/logo.png</file>
+    <file>res/images/male.png</file>
+    <file>res/images/female.png</file>
+    <file>res/qss/table_widget.qss</file>
+</qresource>
+</RCC>
