@@ -1,4 +1,4 @@
-####cmake中一些预定义变量
+#### cmake中一些预定义变量
 
 * PROJECT\_SOURCE\_DIR 工程的根目录
 * PROJECT\_BINARY\_DIR 运行cmake命令的目录,通常是${PROJECT\_SOURCE\_DIR}/build
@@ -33,9 +33,9 @@
 * CMAKE\_C\_FLAGS 设置C编译选项
 * CMAKE\_CXX\_FLAGS 设置C++编译选项
 
-####cmake常用命令
+#### cmake常用命令
 
-#####基本语法规则：
+##### 基本语法规则：
 
 * cmake变量使用${}方式取值,但是在IF控制语句中是直接使用变量名
 * 环境变量使用$ENV{}方式取值,使用SET(ENV{VAR} VALUE)赋值
@@ -49,7 +49,7 @@
 
 * 指令是大小写无关的,参数和变量是大小写相关的。推荐你全部使用**大写**指令。
 
-#####部分常用命令列表：
+##### 部分常用命令列表：
 
 * PROJECT
   PROJECT(projectname [CXX] [C] [Java])
@@ -156,17 +156,17 @@
   ENDIF (expression) # 一定要有ENDIF与IF对应
   ```
 
-  IF (expression), expression不为：空,0,N,NO,OFF,FALSE,NOTFOUND或&lt;var>\_NOTFOUND,为真
-  IF (not exp), 与上面相反
-  IF (var1 AND var2)
-  IF (var1 OR var2)
-  IF (COMMAND cmd) 如果cmd确实是命令并可调用,为真
-  IF (EXISTS dir) IF (EXISTS file) 如果目录或文件存在,为真
-  IF (file1 IS\_NEWER\_THAN file2),当file1比file2新,或file1/file2中有一个不存在时为真,文件名需使用全路径
-  IF (IS\_DIRECTORY dir) 当dir是目录时,为真
-  IF (DEFINED var) 如果变量被定义,为真
-  IF (var MATCHES regex) 此处var可以用var名,也可以用${var}
-  IF (string MATCHES regex)
+  - IF (expression), expression不为：空,0,N,NO,OFF,FALSE,NOTFOUND或&lt;var>\_NOTFOUND,为真
+  - IF (not exp), 与上面相反
+  - IF (var1 AND var2)
+  - IF (var1 OR var2)
+  - IF (COMMAND cmd) 如果cmd确实是命令并可调用,为真
+  - IF (EXISTS dir) IF (EXISTS file) 如果目录或文件存在,为真
+  - IF (file1 IS\_NEWER\_THAN file2),当file1比file2新,或file1/file2中有一个不存在时为真,文件名需使用全路径
+  - IF (IS\_DIRECTORY dir) 当dir是目录时,为真
+  - IF (DEFINED var) 如果变量被定义,为真
+  - IF (var MATCHES regex) 此处var可以用var名,也可以用${var}
+  - IF (string MATCHES regex)
   ```bash
   当给定的变量或者字符串能够匹配正则表达式regex时为真。比如：
   IF ("hello" MATCHES "ell")
@@ -175,20 +175,20 @@
   ```
 
   **数字比较表达式**
-  IF (variable LESS number)
-  IF (string LESS number)
-  IF (variable GREATER number)
-  IF (string GREATER number)
-  IF (variable EQUAL number)
-  IF (string EQUAL number)
+  - IF (variable LESS number)
+  - IF (string LESS number)
+  - IF (variable GREATER number)
+  - IF (string GREATER number)
+  - IF (variable EQUAL number)
+  - IF (string EQUAL number)
 
   **按照字母表顺序进行比较**
-  IF (variable STRLESS string)
-  IF (string STRLESS string)
-  IF (variable STRGREATER string)
-  IF (string STRGREATER string)
-  IF (variable STREQUAL string)
-  IF (string STREQUAL string)
+  - IF (variable STRLESS string)
+  - IF (string STRLESS string)
+  - IF (variable STRGREATER string)
+  - IF (string STRGREATER string)
+  - IF (variable STREQUAL string)
+  - IF (string STREQUAL string)
   ```bash
   一个小例子,用来判断平台差异：
   IF (WIN32)
@@ -287,12 +287,12 @@
   14
   ```
 
-####cmake中如何生成动态库和静态库
+#### cmake中如何生成动态库和静态库
 
 参考ADD\_LIBRARY和SET\_TARGET\_PROPERTIES用法
 t3示例
 
-####cmake中如何使用动态库和静态库（查找库的路径）
+#### cmake中如何使用动态库和静态库（查找库的路径）
 
 参考INCLUDE\_DIRECTORIES, LINK\_DIRECTORIES, TARGET\_LINK\_LIBRARIES用法
 t4示例使用动态库或静态库
@@ -301,7 +301,7 @@ t6示例如何使用自定义的cmake模块(编写了自定义的FindHELLO.cmake
 
 **注意**读t5和t6的CMakeLists.txt和FindHELLO.cmake中的注释部分
 
-####cmake中如何指定生成文件的输出路径
+#### cmake中如何指定生成文件的输出路径
 
   * 如上ADD\_SUBDIRECTORY的时候指定目标二进制文件输出路径（推荐使用下面这种）
   * 使用SET命令重新定义EXECUTABLE\_OUTPUT\_PATH和LIBRARY\_OUTPUT\_PATH变量来指定最终的二进制文件的位置
@@ -311,13 +311,13 @@ t6示例如何使用自定义的cmake模块(编写了自定义的FindHELLO.cmake
   ```
   上面的两条命令通常紧跟ADD\_EXECUTABLE和ADD\_LIBRARY,与其写在同一个CMakeLists.txt即可
 
-####cmake中如何增加编译选项
+#### cmake中如何增加编译选项
 
 使用变量CMAKE\_C\_FLAGS添加C编译选项
 使用变量CMAKE\_CXX\_FLAGS添加C++编译选项
 使用ADD\_DEFINITION添加
 
-####cmake中如何增加头文件路径
+#### cmake中如何增加头文件路径
 
 参考INCLUDE\_DIRECTORIES命令用法
 
@@ -325,7 +325,7 @@ t6示例如何使用自定义的cmake模块(编写了自定义的FindHELLO.cmake
 
 参考MESSAGE用法
 
-####cmake中如何给变量赋值
+#### cmake中如何给变量赋值
 
 参考SET和AUX\_SOURCE\_DIRECTORY用法
 
