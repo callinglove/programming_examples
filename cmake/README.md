@@ -287,19 +287,26 @@
   14
   ```
 
-#### cmake中如何生成动态库和静态库
+### 实例说明
 
-参考ADD\_LIBRARY和SET\_TARGET\_PROPERTIES用法
-t3示例
+- t01 简单生成可执行程序
+	- PROJECT定义工程名称，默认生成PROJECT_NAME、PROJECT_BINARY_DIR、PROJECT_SOURCE_DIR
+	- SET命令给命令赋值
+	- MESSAGE命令打印信息到屏幕上
+	- ADD_EXECUTABLE添加生成可执行程序
+- t02 多个目录
+	- ADD_SUBDIRECTORY添加子目录
+	- AUX_SOURCE_DIRECTORY将目录下的所有源文件赋值给变量
+	- SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin) 设置生成可执行程序的目录
+- t03 库的生成
+	参考ADD\_LIBRARY和SET\_TARGET\_PROPERTIES用法
+- cmake中如何使用动态库和静态库以及查找库的路径
+	- 参考INCLUDE\_DIRECTORIES, LINK\_DIRECTORIES, TARGET\_LINK\_LIBRARIES用法
+	- t04示例使用动态库或静态库以及RPATH，INSTALL命令
+	- t05示例如何使用cmake预定义的cmake模块(以FindCURL.cmake为例演示)
+	- t06示例如何使用自定义的cmake模块(编写了自定义的FindHELLO.cmake)
 
-#### cmake中如何使用动态库和静态库（查找库的路径）
-
-参考INCLUDE\_DIRECTORIES, LINK\_DIRECTORIES, TARGET\_LINK\_LIBRARIES用法
-t4示例使用动态库或静态库
-t5示例如何使用cmake预定义的cmake模块(以FindCURL.cmake为例演示)
-t6示例如何使用自定义的cmake模块(编写了自定义的FindHELLO.cmake)
-
-**注意**读t5和t6的CMakeLists.txt和FindHELLO.cmake中的注释部分
+	**注意**读t5和t6的CMakeLists.txt和FindHELLO.cmake中的注释部分
 
 #### cmake中如何指定生成文件的输出路径
 
@@ -317,13 +324,6 @@ t6示例如何使用自定义的cmake模块(编写了自定义的FindHELLO.cmake
 使用变量CMAKE\_CXX\_FLAGS添加C++编译选项
 使用ADD\_DEFINITION添加
 
-#### cmake中如何增加头文件路径
-
-参考INCLUDE\_DIRECTORIES命令用法
-
-####cmake中如何在屏幕上打印信息
-
-参考MESSAGE用法
 
 #### cmake中如何给变量赋值
 
@@ -336,4 +336,5 @@ fork from:
 
 - https://github.com/wzpan/cmake-demo
 - https://github.com/carl-wang-cn/demo/tree/master/cmake
+- https://github.com/ttroy50/cmake-examples
 - [CMake 入门实战](http://www.hahack.com/codes/cmake/)
