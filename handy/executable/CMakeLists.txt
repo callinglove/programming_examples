@@ -1,0 +1,16 @@
+IF(OPENCV_FOUND)
+  add_executable(mat_operation_ex mat_operation_ex.cpp)
+  target_link_libraries(mat_operation_ex cvUtils ${OpenCV_LIBS})
+ELSE()
+  message(WARNING "not found opencv, so not compile mat_operation_ex")
+ENDIF()
+
+IF(OPENCV_FOUND AND FREETYPE_FOUND)
+  add_executable(mat_put_chinese_txt_ex mat_put_chinese_txt_ex.cpp)
+  target_link_libraries(mat_put_chinese_txt_ex cvUtils ${OpenCV_LIBS} ${FREETYPE_LIBRARIES})
+ELSE()
+  message(WARNING "not found opencv or freetype, so not compile mat_put_chinese_txt_ex")
+ENDIF()
+
+add_executable(parameter_ex parameter_ex.cpp)
+target_link_libraries(parameter_ex parameter)
