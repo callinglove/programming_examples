@@ -70,6 +70,5 @@ function main() {
     # ./install.py --clang-completer
 }
 
-
-
+main
 
