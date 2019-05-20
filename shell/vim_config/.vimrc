@@ -16,6 +16,9 @@ call vundle#begin()
 " 插件管理工具
 Plugin 'VundleVim/Vundle.vim'
 
+" 状态行增强插件
+Plugin 'vim-airline/vim-airline'
+
 " 目录树插件
 Plugin 'scrooloose/nerdtree'
 
@@ -27,6 +30,28 @@ Plugin 'Valloric/YouCompleteMe'
 
 call vundle#end()
 filetype plugin indent on
+
+
+" ===========================vim-airline config ==============================
+let g:airline#extensions#tabline#enabled = 1
+
+set laststatus=2 "1为关闭底部状态栏 2为开启"
+set t_Co=256     "终端开启256色支持"
+
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
+" powerline symbols
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = '☰'
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.dirty='⚡'
 
 
 " =============================nerdtree config ===============================

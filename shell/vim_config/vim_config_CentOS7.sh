@@ -70,8 +70,8 @@ function main() {
     vim +PluginInstall +qall
 
     # compile YCM
-    # cd ~/.vim/bundle/YouCompleteMe
-    # ./install.py --clang-completer
+    cd ~/.vim/bundle/YouCompleteMe
+    ./install.py --clang-completer
 }
 
 main
