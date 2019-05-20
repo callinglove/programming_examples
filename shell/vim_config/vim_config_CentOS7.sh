@@ -58,6 +58,10 @@ function pre_install_YouCompleteMe() {
 }
 
 function main() {
+    pre_install_Vundle
+    pre_install_taglist
+    pre_install_YouCompleteMe
+
     # 备份~/.vimrc
     [[ -z "~/.vimrc" ]] && mv ~/.vimrc{,_bk}
     wget https://raw.githubusercontent.com/callinglove/programming_examples/master/shell/vim_config/.vimrc -O ~/.vimrc
