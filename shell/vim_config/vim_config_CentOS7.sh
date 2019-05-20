@@ -8,7 +8,7 @@
 #
 # 本脚本用于CentOS7环境下vim配置,实现一个命令完成配置
 #
-# wget https://github.com/callinglove/programming_examples/blob/master/shell/vim_config/vim_config_CentOS7.sh -O - | bash
+# wget https://raw.githubusercontent.com/callinglove/programming_examples/master/shell/vim_config/vim_config_CentOS7.sh -O - | bash
 #
 ###################################################
 
@@ -60,7 +60,7 @@ function pre_install_YouCompleteMe() {
 function main() {
     # 备份~/.vimrc
     [[ -z "~/.vimrc" ]] && mv ~/.vimrc{,_bk}
-    wget https://github.com/callinglove/programming_examples/blob/master/shell/vim_config/vim_config_CentOS7.sh -O ~/.vimrc
+    wget https://raw.githubusercontent.com/callinglove/programming_examples/master/shell/vim_config/.vimrc -O ~/.vimrc
     
     # 安装插件
     vim +PluginInstall +qall
