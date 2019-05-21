@@ -162,6 +162,43 @@ ctags简单应用
 - :ta name 而使用快捷组合键
 - Ctrl + o/t 返回到跳转前的位置。
 
+## auto-pairs 插件
+
+https://github.com/jiangmiao/auto-pairs
+
+## YouCompleteMe 插件
+
+帮助文档 ~/.vim/bundle/YouCompleteMe/doc/youcompleteme.txt 或者 :help youcompleteme
+
+Bug: 跳转函数不尽如意，决定使用ctags
+
+全局.ycm_extra_conf.py中加入系统头文件路径，如
+```
+flags = [
+    ...
+    'isystem', '/usr/include',
+    'isystem', '/usr/include/c++/4.8.5',
+    ...
+]
+```
+本地.ycm_extra_conf.py中加入工程头文件路径，如
+```
+flags = [
+    ...
+    '-I', '/usr/local/opencv3.1.0/include',
+    '-I', '/usr/local/mysql/include',
+    ...
+]
+```
+
+YCM提供的跳跃功能采用了vim的jumplist，往前跳和往后跳的快捷键为Ctrl+O以及Ctrl+I
+
+
+## YCM-Generator 插件
+
+用以生成YCM需要的本地.ycm_extra_conf.py配置文件
+
+~/.vim/bundle/YCM-Generator/config_gen.py --help
 
 
 buffers操作
