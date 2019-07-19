@@ -5,6 +5,21 @@
 :set hlsearch           " 启用高亮搜索 boolean (default off)
 :syntax on              " 启用语法高亮
 
+set tabstop=4       " 设定tab长度为4
+set softtabstop=4   " 使得按退格键时可以一次删掉 4 个空格
+set shiftwidth=4    " 设定 << 和 >> 命令移动时的宽度为 4
+set expandtab       " 将tab键替换成空格
+
+" python代码缩进PEP8风格
+au BufNewFile,BufRead *.py,*pyw
+  \ set tabstop=4 |
+  \ set softtabstop=4 |
+  \ set shiftwidth=4 |
+  \ set textwidth=79 |
+  \ set expandtab |
+  \ set autoindent |
+  \ set fileformat=unix
+
 
 " ================================Vundle config===============================
 set nocompatible
@@ -22,8 +37,9 @@ Plugin 'vim-airline/vim-airline'
 " 目录树插件
 Plugin 'scrooloose/nerdtree'
 
-" 函数列表插件
+" 函数列表插件 displays the tags of the current file in a sidebar
 Plugin 'taglist.vim'
+Plugin 'majutsushi/tagbar'
 
 " 自动匹配括号、引号等插件
 Plugin 'jiangmiao/auto-pairs'
@@ -63,6 +79,8 @@ let g:airline_symbols.dirty='⚡'
 map <F2> :NERDTreeToggle<CR>
 
 let NERDTreeWinSize=25
+" ignore files in NERDTree
+let NERDTreeIgnore=['\.pyc$', '\~$']
 
 
 " =============================taglist config ================================
@@ -70,7 +88,6 @@ map <F3> :TlistToggle<CR>
 
 " 如果ctags不在Path路径下,则配置ctags的路径
 let Tlist_Ctags_Cmd = '/usr/bin/ctags'
-
 
 let Tlist_Show_One_File = 1         "不同时显示多个文件的tag，只显示当前文件的
 let Tlist_Exit_OnlyWindow = 1       "如果taglist窗口是最后一个窗口，则退出vim
@@ -86,6 +103,24 @@ let Tlist_Use_Horiz_Window = 1      "设置taglist窗口横向显示
 " Tlist_WinHeight和Tlist_WinWidth可以设置taglist窗口的高度和宽度
 
 
+" ================================tagbar config===============================
+" 将开启tagbar的快捷键设置为　<Leader>tb
+nmap <Leader>tb :TagbarToggle<CR>
+" 这是tagbar一打开，光标即在tagbar页面内，默认在vim打开的文件内
+let g:tagbar_autofocus = 1
+" 设置标签不排序，默认排序
+let g:tagbar_sort = 0
+
+" 设置ctags所在路径
+let g:tagbar_ctags_bin='/usr/bin/ctags'
+" 让tagbar在页面左侧显示，默认右边
+"let g:tagbar_left = 1
+" 设置tagbar的宽度
+let g:tagbar_width=30
+" 在某些情况下自动打开tagbar
+"autocmd BufReadPost *.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()
+
+
 " ===========================YouCompleteMe config=============================
 " Python Semantic Completion
 " let g:ycm_python_binary_path = '/usr/bin/python3'
@@ -98,14 +133,14 @@ let g:ycm_confirm_extra_conf=0
 let g:ycm_seed_identifiers_with_syntax=1
 " 开启 YCM 基于标签引擎
 let g:ycm_collect_identifiers_from_tags_files = 1
+" 注释和字符串中的文字也会被收入补全
+let g:ycm_collect_identifiers_from_comments_and_strings = 0
 " 从第2个键入字符就开始罗列匹配项
 let g:ycm_min_num_of_chars_for_completion=2
 " 在注释输入中也能补全
 let g:ycm_complete_in_comments = 1
 " 在字符串输入中也能补全
 let g:ycm_complete_in_strings = 1
-" 注释和字符串中的文字也会被收入补全
-let g:ycm_collect_identifiers_from_comments_and_strings = 1
 " 弹出列表时选择第1项的快捷键(默认为<TAB>和<Down>)
 let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
 " 弹出列表时选择前1项的快捷键(默认为<S-TAB>和<UP>)
@@ -115,8 +150,21 @@ let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 " 停止显示补全列表(防止列表影响视野), 可以按<C-Space>重新弹出
 "let g:ycm_key_list_stop_completion = ['<C-y>']
 
-let g:ycm_error_symbol = '>>'
-let g:ycm_warning_symbol = '>>'
+" preview window to auto-close after you select a completion string
+"let g:ycm_autoclose_preview_window_after_completion=1
+" to close the preview window after leaving insert mode
+let g:ycm_autoclose_preview_window_after_insertion=1
+
+" 错误标记
+let g:ycm_error_symbol = '✗'
+" 警告标记
+let g:ycm_warning_symbol = '⚠'
+" YcmErrorSign
+" YcmWarningSign
+" YcmErrorLine
+" YcmWarningLine
+highlight YcmErrorSection term=italic ctermbg=Grey cterm=bold
+highlight YcmWarningSection term=italic ctermbg=Grey cterm=bold
 
 nnoremap <leader>gl :YcmCompleter GoToDeclaration<CR>
 nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
@@ -133,14 +181,12 @@ func s:SetCommentLine(pre, comment)
 endfunc
 
 func s:SetCommonComment(pre)
-    call s:SetCommentLine(a:pre, " ")
-    call s:SetCommentLine(a:pre, "      FileName: ".expand("%"))
-    call s:SetCommentLine(a:pre, " ")
-    call s:SetCommentLine(a:pre, "        Author: ")
-    call s:SetCommentLine(a:pre, "   Description: ---")
-    call s:SetCommentLine(a:pre, "  Created Time: ".strftime("%c"))
-    call s:SetCommentLine(a:pre, " Last Modified: ".strftime("%Y-%m-%d %H:%M:%S"))
-    call s:SetCommentLine(a:pre, " ")
+    call s:SetCommentLine(a:pre, " @file        : ".expand("%"))
+    call s:SetCommentLine(a:pre, " @author      : ")
+    call s:SetCommentLine(a:pre, " @date        : ".strftime("%c"))
+    " call s:SetCommentLine(a:pre, " Last Modified: ".strftime("%Y-%m-%d %H:%M:%S"))
+    call s:SetCommentLine(a:pre, " @remark ")
+    call s:SetCommentLine(a:pre, " @note ")
 endfunc
 
 func SetFileHeaderComment()
