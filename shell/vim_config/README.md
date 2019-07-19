@@ -162,11 +162,36 @@ ctags简单应用
 - :ta name 而使用快捷组合键
 - Ctrl + o/t 返回到跳转前的位置。
 
+## tagbar 插件
+
+- :TagbarToggle 窗口显示
+- 跳转
+    - <CR>: 回车跳到定义位置
+    - p: 跳到定义位置，但光标仍然在tagbar原位置
+    - P: 打开一个预览窗口显示标签内容，如果在标签处回车跳到vim编辑页面内定义处，则预览窗口关闭
+    - <C-N>: 跳到下一个标签页的顶端
+    - <C-P>: 跳到上一个（或当前）标签页的顶端
+    - <Space>: 底行显示标签原型
+
+- 折叠: 提供与vim内建映射一样的操作
+    - \+ 展开标签内容
+    - \-  折叠标签内容
+    - \*  展开所有标签
+    - \= 折叠所有标签
+    - o 在折叠与展开间切换，按o键，折叠标签，再按一次o，则展开标签，如此来回切换
+- Misc
+    - s: 切换排序，一次s，则让标签按字典排序，再一次s，则按照文件内出现顺序排序
+    - x: 是否展开tagbar标签栏，x展开，再一次x，则缩小标签栏
+    - <F1>: 切换快捷键帮助页面，F1一次出现快捷键帮助页面，在一次F1，快捷键帮助页面隐藏。
+
 ## auto-pairs 插件
 
 https://github.com/jiangmiao/auto-pairs
 
 ## YouCompleteMe 插件
+
+参考:
+- [YouCompleteMe 中容易忽略的配置](https://zhuanlan.zhihu.com/p/33046090)
 
 帮助文档 ~/.vim/bundle/YouCompleteMe/doc/youcompleteme.txt 或者 :help youcompleteme
 
