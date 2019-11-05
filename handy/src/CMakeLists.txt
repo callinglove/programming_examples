@@ -3,7 +3,7 @@ IF(OPENCV_FOUND)
   SET(CVUTILSLIBS ${OpenCV_LIBS})
 
   IF(NOT FREETYPE_FOUND)
-	message(WARNING "not found freetype, so not compile OpencvText")
+    message(WARNING "not found freetype, so not compile OpencvText")
     list(REMOVE_ITEM cvUtils_SRC "OpencvText.cpp")
   ELSE()
     ADD_DEFINITIONS(-DENABLE_CHINESE_TEXT_SUPPORT)
