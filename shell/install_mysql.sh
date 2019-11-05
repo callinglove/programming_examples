@@ -1,17 +1,15 @@
 #!/bin/bash
 
-function usage() {
-    echo '''install mysql by this script, and after that set password
+usage="\
+install mysql by this script, and after that set password.
 
--v, --version=name special the version of mysql to install
--p, --password=name special the password after install
--e, --enable whether start mysql on system boot, default no'''
-    return 0
-}
+-v, --version=name special the version of mysql to install.
+-p, --password=name special the password after install.
+-e, --enable whether start mysql on system boot, default no."
 
 function install_mysql() {
     # install mysql repo
-    rpm -Uvh ${rpm_url}
+    rpm -Uvh "${rpm_url}"
 
     if [[ "${MYSQL_VERSION}" = "57" ]]; then
         yum --enablerepo=mysql57-community --disablerepo=mysql80-community insatll mysql-community-server
@@ -25,26 +23,26 @@ function install_mysql() {
 function set_mysql() {
     # 开机启动设置
     if [[ "${MYSQL_ONBOOT}" = "yes" ]]; then
-        if [[ "${release}" =~ "el6.x86_64" ]] # CentOS6
+        if [[ "${release}" =~ el6.x86_64 ]] # CentOS6
         then
             chkconfig mysqld on
-        elif [[ "${release}" =~ "el7.x86_64" ]] # CentOS7
+        elif [[ "${release}" =~ el7.x86_64 ]] # CentOS7
         then
             systemctl enable mysqld
         fi
     fi
 
     # start mysqld, then set password
-    if [[ "${release}" =~ "el6.x86_64" ]] # CentOS6
+    if [[ "${release}" =~ el6.x86_64 ]] # CentOS6
     then
         service mysqld start
         sleep 2
 
         /usr/bin/mysqladmin -u root password '${MYSQL_PW}'
-        mysql -u root -p${MYSQL_PW} -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '${MYSQL_PW}' WITH GRANT OPTION;"
+        mysql -u root -p"${MYSQL_PW}" -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '${MYSQL_PW}' WITH GRANT OPTION;"
         # mysql -u root -p${MYSQL_PW} -e "CREATE DATABASE androidscanner;"
         # mysql -u root -p${MYSQL_PW} androidscanner < ./androidscanner-need.sql
-    elif [[ "${release}" =~ "el7.x86_64" ]] # CentOS7
+    elif [[ "${release}" =~ el7.x86_64 ]] # CentOS7
     then
         systemctl start mysqld
         sleep 2
@@ -64,10 +62,10 @@ EOF
 }
 
 release=$(uname -r)
-if [[ "${release}" =~ "el6.x86_64" ]] # CentOS6
+if [[ "${release}" =~ el6.x86_64 ]] # CentOS6
 then
     rpm_url=https://repo.mysql.com/mysql80-community-release-el6.rpm
-elif [[ "${release}" =~ "el7.x86_64" ]] # CentOS7
+elif [[ "${release}" =~ el7.x86_64 ]] # CentOS7
 then
     rpm_url=https://repo.mysql.com/mysql80-community-release-el7.rpm
 else
@@ -90,7 +88,7 @@ while true
 do
     case "$1" in
         -h|--help)
-            usage
+            echo $usage
             exit 0
             ;;
         -v|--version)
@@ -117,8 +115,8 @@ do
     esac
 done
 
-if [[ -n "$(rpm -qa | grep mysql-community-server)" ]]; then
-    echo "You have already install rpm -qa | grep mysql-community-server"
+if rpm -qa | grep -q mysql-community-server; then
+    echo "You have already install mysql-community-server"
     echo "Please remove mysql-community-server, then install mysql by this script"
     exit 1
 fi
