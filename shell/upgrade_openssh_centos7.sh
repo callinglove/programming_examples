@@ -49,6 +49,7 @@ function install_rpm() {
     cat /tmp/sshd >  /etc/pam.d/sshd
     cat /tmp/sshd_config > /etc/ssh/sshd_config
 
+    sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
     sed -i '/#UsePAM no/a\UsePAM yes' /etc/ssh/sshd_config
     chmod 0600 /etc/ssh/ssh_host_*key
 }
