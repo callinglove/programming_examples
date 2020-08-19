@@ -263,10 +263,22 @@ do
         if (tvb:len() < (offset+4)) then
             return false
         end
-        
+
         --print(string.format("start code %x %x %x %x",tvb:range(offset, 1):uint(),tvb:range(offset+1, 1):uint(),tvb:range(offset+2, 1):uint(),tvb:range(offset+3, 1):uint()))
         if ((tvb:range(offset, 1):uint() == 0x00) and (tvb:range(offset+1, 1):uint() == 0x00)
             and (tvb:range(offset+2, 1):uint() == 0x01) and (tvb:range(offset+3, 1):uint() == 0xbb)) then
+            return true
+        else
+            return false
+        end
+    end
+    function is_program_stream_map(tvb, offset)
+        if (tvb:len() < (offset+4)) then
+            return false
+        end
+
+        if ((tvb:range(offset, 1):uint() == 0x00) and (tvb:range(offset+1, 1):uint() == 0x00)
+            and (tvb:range(offset+2, 1):uint() == 0x01) and (tvb:range(offset+3, 1):uint() == 0xbc)) then
             return true
         else
             return false
@@ -417,7 +429,7 @@ do
 
                 local dts_1 = tvb:range(index+5,1):bitfield(4,3)
                 local dts_2 = tvb:range(index+6,2):bitfield(0,15)
-                local dts_3 = tvb:range(indext+8,2):bitfield(0,15)
+                local dts_3 = tvb:range(index+8,2):bitfield(0,15)
                 local dts = bit.lshift(dts_1,30)+bit.lshift(dts_2,15)+dts_3
                 ps_pes_tree:add(ps_pes_dts, tvb:range(index+5,5)):append_text(string.format(": %u",dts))
                 index = index + 10
@@ -522,13 +534,21 @@ do
                 local system_header_length = tvb:range(offset+4, 2):uint()
                 dis_system_header(tvb, proto_tree, offset)
                 offset = offset + 4 + 2 + system_header_length
-                
-                -- program stream map
+            end
+
+            -- program stream map
+            if (is_program_stream_map(tvb, offset)) then
                 local program_map_length = tvb:range(offset+4, 2):uint()
                 dis_stream_map(tvb, proto_tree, offset)
                 offset = offset + 4 + 2 + program_map_length
             end
-            
+
+            if (is_system_header(tvb, offset)) then
+                local system_header_length = tvb:range(offset+4, 2):uint()
+                dis_system_header(tvb, proto_tree, offset)
+                offset = offset + 4 + 2 + system_header_length
+            end
+
             while (is_pes_header(tvb, offset))
             do
                 local pes_length = tvb:range(offset+4, 2):uint()
