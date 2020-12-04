@@ -27,10 +27,10 @@
 do
     --local bit = require("bit") -- only work before 1.10.1
     --local bit = require("bit32") -- only work after 1.10.1 (only support in Lua 5.2)
-	local version_str = string.match(_VERSION, "%d+[.]%d*")
-	local version_num = version_str and tonumber(version_str) or 5.1
-	local bit = (version_num >= 5.2) and require("bit32") or require("bit")
- 
+    local version_str = string.match(_VERSION, "%d+[.]%d*")
+    local version_num = version_str and tonumber(version_str) or 5.1
+    local bit = (version_num >= 5.2) and require("bit32") or require("bit")
+
     -- for geting h264 data (the field's value is type of ByteArray)
     local f_h264 = Field.new("h264") 
     local f_rtp = Field.new("rtp") 
@@ -48,7 +48,7 @@ do
         [8] = "PPS",
         [9] = "AUD",
     }
-    
+
     local function get_enum_name(list, index)
         local value = list[index]
         return value and value or "Unknown"
@@ -59,13 +59,13 @@ do
         local tw = TextWindow.new("Export H264 to File Info Win")
         --local pgtw = ProgDlg.new("Export H264 to File Process", "Dumping H264 data to file...")
         local pgtw;
-        
+
         -- add message to information window
         function twappend(str)
             tw:append(str)
             tw:append("\n")
         end
-        
+
         -- running first time for counting and finding sps+pps, second time for real saving
         local first_run = true 
         -- variable for storing rtp stream and dumping parameters
@@ -76,11 +76,11 @@ do
         local MAX_FRAME_NUM = 3
         -- trigered by all h264 packats
         local my_h264_tap = Listener.new(tap, "h264")
-        
+
         -- get rtp stream info by src and dst address
         function get_stream_info(pinfo)
             local key = "from_" .. tostring(pinfo.src) .. "_" .. tostring(pinfo.src_port) .. "to" .. tostring(pinfo.dst) .. "_" .. tostring(pinfo.dst_port) .. (drop_uncompleted_frame and "_dropped" or "_all")
-			key = key:gsub(":", ".")
+            key = key:gsub(":", ".")
             local stream_info = stream_infos[key]
             if not stream_info then -- if not exists, create one
                 stream_info = { }
@@ -94,12 +94,12 @@ do
             end
             return stream_info
         end
-        
+
         -- write a NALU or part of NALU to file.
         local function real_write_to_file(stream_info, str_bytes, begin_with_nalu_hdr)
             if first_run then
                 stream_info.counter = stream_info.counter + 1
-                
+
                 if begin_with_nalu_hdr then
                     -- save SPS or PPS
                     local nalu_type = bit.band(str_bytes:byte(0,1), 0x1F)
@@ -109,7 +109,7 @@ do
                         stream_info.pps = str_bytes
                     end
                 end
-                
+
             else -- second time running
                 --[[
                 if begin_with_nalu_hdr then
@@ -120,7 +120,7 @@ do
                     end
                 end
                 ]]
-                
+
                 if stream_info.counter2 == 0 then
                     -- write SPS and PPS to file header first
                     if stream_info.sps then
@@ -136,7 +136,7 @@ do
                         twappend("Not found PPS for [" .. stream_info.filename .. "], it might not be played!\n")
                     end
                 end
-            
+
                 if begin_with_nalu_hdr then
                     -- *.264 raw file format seams that every nalu start with 0x00000001
                     stream_info.file:write("\00\00\00\01")
@@ -144,10 +144,12 @@ do
                 stream_info.file:write(str_bytes)
                 stream_info.counter2 = stream_info.counter2 + 1
                 -- update progress window's progress bar
-                if stream_info.counter > 0 and stream_info.counter2 < stream_info.counter then pgtw:update(stream_info.counter2 / stream_info.counter) end
+                if stream_info.counter > 0 and stream_info.counter2 < stream_info.counter then
+                    pgtw:update(stream_info.counter2 / stream_info.counter)
+                end
             end
         end
-        
+
         local function comp_pack(p1, p2)
             if math.abs(p2.seq - p1.seq) < 1000 then
                 return p1.seq < p2.seq
@@ -155,7 +157,7 @@ do
                 return p1.seq > p2.seq
             end
         end
-        
+
         local function print_seq_error(stream_info, str)
             if stream_info.seq_error_counter == nil then
                 stream_info.seq_error_counter = 0
@@ -163,10 +165,10 @@ do
             stream_info.seq_error_counter = stream_info.seq_error_counter + 1
             twappend(str .. " SeqErrCounts=" .. stream_info.seq_error_counter)
         end
-        
+
         local function sort_and_write(stream_info, frame)
             table.sort(frame.packs, comp_pack)
-            
+
             -- check if it is uncompleted frame
             local completed = true
             for i = 1, #frame.packs - 1, 1 do
@@ -177,12 +179,12 @@ do
                     completed = false
                 end
             end
-            
+
             if not frame.packs[1].nalu_begin then
                 print_seq_error(stream_info, " RTP pack Lost: timestamp=" .. frame.timestamp .. " seq before " .. frame.packs[1].seq)
                 completed = false
             end
-            
+
             if not frame.packs[#frame.packs].nalu_end then
                 print_seq_error(stream_info, " RTP pack Lost: timestamp=" .. frame.timestamp .. " seq after " .. frame.packs[#frame.packs].seq)
                 completed = false
@@ -197,19 +199,19 @@ do
                          .. " nalu_type=" .. (frame.nalu_type and frame.nalu_type .."(" .. get_enum_name(nalu_type_list, frame.nalu_type) .. ")" or "unknown") )
             end
         end
-        
+
         local function write_to_file(stream_info, str_bytes, begin_with_nalu_hdr, timestamp, seq, end_of_nalu)
             if drop_uncompleted_frame and not first_run then -- sort and drop uncompleted frame
                 if stream_info.frame_buffer_size == nil then
                     stream_info.frame_buffer_size = 0
                 end
-                
+
                 if timestamp < 0 or seq < 0 then
                     twappend(" Invalid rtp timestamp (".. timestamp .. ") or seq (".. seq .. ")! We have to write it to file directly!")
                     real_write_to_file(stream_info, str_bytes, begin_with_nalu_hdr)
                     return;
                 end
-                
+
                 -- check if this frame has existed
                 local p = stream_info.frame_buffer
                 while p do
@@ -219,7 +221,7 @@ do
                         p = p.next
                     end
                 end
-                
+
                 if p then  -- add this pack to frame
                     if begin_with_nalu_hdr then
                         p.nalu_type = bit.band(str_bytes:byte(1), 0x1F)
@@ -227,14 +229,14 @@ do
                     table.insert(p.packs, { ["seq"] = seq, ["data"] = str_bytes , ["nalu_begin"] = begin_with_nalu_hdr, ["nalu_end"] = end_of_nalu })
                     return
                 end
-                
+
                 if stream_info.frame_buffer_size >= MAX_FRAME_NUM then
                     -- write the most early frame to file
                     sort_and_write(stream_info, stream_info.frame_buffer)
                     stream_info.frame_buffer = stream_info.frame_buffer.next
                     stream_info.frame_buffer_size = stream_info.frame_buffer_size - 1
                 end
-                
+
                 -- create a new frame buffer for new frame (timestamp)
                 local frame = {}
                 frame.timestamp = timestamp
@@ -243,7 +245,7 @@ do
                 end
                 frame.packs = {{ ["seq"] = seq, ["data"] = str_bytes, ["nalu_begin"] = begin_with_nalu_hdr, ["nalu_end"] = end_of_nalu}}  -- put pack to index 1 pos
                 frame.next = nil
-                
+
                 if stream_info.frame_buffer_size == 0 then  -- first frame
                     stream_info.frame_buffer = frame
                 else
@@ -254,19 +256,19 @@ do
                     p.next = frame
                 end
                 stream_info.frame_buffer_size = stream_info.frame_buffer_size + 1
-                
+
             else -- write data direct to file without sort or frame drop
                 real_write_to_file(stream_info, str_bytes, begin_with_nalu_hdr)
             end
         end
-        
+
         -- read RFC3984 about single nalu/stap-a/fu-a H264 payload format of rtp
         -- single NALU: one rtp payload contains only NALU
         local function process_single_nalu(stream_info, h264, timestamp, seq)
             --write_to_file(stream_info, h264:tvb()():string(), true, timestamp, seq, true)
-			write_to_file(stream_info, ((version_num >= 5.2) and h264:tvb():raw() or h264:tvb()():string()), true, timestamp, seq, true)
+            write_to_file(stream_info, ((version_num >= 5.2) and h264:tvb():raw() or h264:tvb()():string()), true, timestamp, seq, true)
         end
-        
+
         -- STAP-A: one rtp payload contains more than one NALUs
         local function process_stap_a(stream_info, h264, timestamp, seq)
             local h264tvb = h264:tvb()
@@ -275,12 +277,12 @@ do
             repeat
                 local size = h264tvb(offset,2):uint()
                 --write_to_file(stream_info, h264tvb(offset+2, size):string(), true, timestamp, i, true)
-				write_to_file(stream_info, ((version_num >= 5.2) and h264tvb:raw(offset+2, size) or h264tvb(offset+2, size):string()), true, timestamp, i, true)
+                write_to_file(stream_info, ((version_num >= 5.2) and h264tvb:raw(offset+2, size) or h264tvb(offset+2, size):string()), true, timestamp, i, true)
                 offset = offset + 2 + size
                 i = i + 1
             until offset >= h264tvb:len()
         end
-        
+
         -- FU-A: one rtp payload contains only one part of a NALU (might be begin, middle and end part of a NALU)
         local function process_fu_a(stream_info, h264, timestamp, seq)
             local h264tvb = h264:tvb()
@@ -291,14 +293,14 @@ do
                 -- start bit is set then save nalu header and body
                 local nalu_hdr = bit.bor(bit.band(fu_idr, 0xE0), bit.band(fu_hdr, 0x1F))
                 --write_to_file(stream_info, string.char(nalu_hdr) .. h264tvb(2):string(), true, timestamp, seq, end_of_nalu)
-				write_to_file(stream_info, string.char(nalu_hdr) .. ((version_num >= 5.2) and h264tvb:raw(2) or h264tvb(2):string()), true, timestamp, seq, end_of_nalu)
+                write_to_file(stream_info, string.char(nalu_hdr) .. ((version_num >= 5.2) and h264tvb:raw(2) or h264tvb(2):string()), true, timestamp, seq, end_of_nalu)
             else
                 -- start bit not set, just write part of nalu body
                 --write_to_file(stream_info, h264tvb(2):string(), false, timestamp, seq, end_of_nalu)
-				write_to_file(stream_info, ((version_num >= 5.2) and h264tvb:raw(2) or h264tvb(2):string()), false, timestamp, seq, end_of_nalu)
+                write_to_file(stream_info, ((version_num >= 5.2) and h264tvb:raw(2) or h264tvb(2):string()), false, timestamp, seq, end_of_nalu)
             end
         end
-        
+
         -- call this function if a packet contains h264 payload
         function my_h264_tap.packet(pinfo,tvb)
             if stream_infos == nil then
@@ -314,47 +316,51 @@ do
                 if h264_f.len < 2 then
                     return
                 end
+
                 --local h264 = h264_f.value   -- is ByteArray, it only works for 1.10.1 or early version
-				--local h264 = h264_f.range:bytes()   -- according to user-guide.chm, there is a bug of fieldInfo.value, so we have to convert it to TVB range first
-				local h264 = (version_num >= 5.2) and h264_f.range:bytes() or h264_f.value 
+                --local h264 = h264_f.range:bytes()   -- according to user-guide.chm, there is a bug of fieldInfo.value, so we have to convert it to TVB range first
+                local h264 = (version_num >= 5.2) and h264_f.range:bytes() or h264_f.value 
                 local hdr_type = bit.band(h264:get_index(0), 0x1F)
                 local stream_info = get_stream_info(pinfo)
---twappend(string.format("hdr_type=%X %d", hdr_type, hdr_type)) 
---twappend("bytearray=" .. tostring(h264))
---twappend("byterange=" .. tostring(h264_f.range):upper())
+                -- twappend(string.format("hdr_type=%X %d", hdr_type, hdr_type)) 
+                -- twappend("bytearray=" .. tostring(h264))
+                -- twappend("byterange=" .. tostring(h264_f.range):upper())
+
                 -- search the RTP timestamp and sequence of this H264
                 local timestamp = -1
                 local seq = -1
-				-- debug begin
-				local rtplen = -1
-				local preh264_foffset = -1
-				local prertp_foffset = -1
-				local preh264len = -1
-				-- debug end
+                -- debug begin
+                local rtplen = -1
+                local preh264_foffset = -1
+                local prertp_foffset = -1
+                local preh264len = -1
+                -- debug end
                 if drop_uncompleted_frame then
-					local matchx = 0;
+                    local matchx = 0;
                     for j,rtp_f in ipairs(rtps) do
                         if h264_f.offset > rtp_f.offset and h264_f.offset - rtp_f.offset <= 16 and h264_f.offset+h264_f.len <= rtp_f.offset+rtp_f.len then
-						-- debug begin
-						--if h264_f.offset > rtp_f.offset and h264_f.offset < rtp_f.offset+rtp_f.len then
-					matchx = matchx + 1
-					if matchx > 1 then
-						print_seq_error(stream_info, "ASS seq=" .. seq .. " timestamp=" .. timestamp .. " rtplen=" .. rtplen .. " rtpoff=" .. prertp_foffset .. " h264off=" .. preh264_foffset .. " h264len=" .. preh264len .. "  |matched=" .. matchx .. "  New seq=" .. rtp_seqs[j].value .. " timestamp=" .. rtp_timestamps[j].value .. " rtplen=" .. rtp_f.len .." rtpoff=" .. rtp_f.offset .. " h264off=" .. h264_f.offset .. " h264.len=" .. h264_f.len)
-					end		 
-					-- debug end
+
+                            -- debug begin
+                            matchx = matchx + 1
+                            if matchx > 1 then
+                                print_seq_error(stream_info, "ASS seq=" .. seq .. " timestamp=" .. timestamp .. " rtplen=" .. rtplen .. " rtpoff=" .. prertp_foffset .. " h264off=" .. preh264_foffset .. " h264len=" .. preh264len .. "  |matched=" .. matchx .. "  New seq=" .. rtp_seqs[j].value .. " timestamp=" .. rtp_timestamps[j].value .. " rtplen=" .. rtp_f.len .." rtpoff=" .. rtp_f.offset .. " h264off=" .. h264_f.offset .. " h264.len=" .. h264_f.len)
+                            end
+                            -- debug end
+
                             seq = rtp_seqs[j].value
                             timestamp = rtp_timestamps[j].value
-							-- debug begin
-							rtplen = rtp_f.len
-							preh264_foffset = h264_f.offset
-							prertp_foffset = rtp_f.offset
-							preh264len = h264_f.len
-							-- debug end
-							break
+
+                            -- debug begin
+                            rtplen = rtp_f.len
+                            preh264_foffset = h264_f.offset
+                            prertp_foffset = rtp_f.offset
+                            preh264len = h264_f.len
+                            -- debug end
+                            break
                         end
                     end
                 end
-                
+
                 if hdr_type > 0 and hdr_type < 24 then
                     -- Single NALU
                     process_single_nalu(stream_info, h264, timestamp, seq)
@@ -369,46 +375,48 @@ do
                 end
             end
         end
-        
+
         -- close all open files
         local function close_all_files()
-            if stream_infos then
-                local no_streams = true
-                for id,stream in pairs(stream_infos) do
-                    if stream and stream.file then
-                        if stream.frame_buffer then
-                            local p = stream.frame_buffer
-                            while p do
-                                sort_and_write(stream, p)
-                                p = p.next
-                            end
-                            stream.frame_buffer = nil
-                            stream.frame_buffer_size = 0
+            if stream_infos == nil then
+                return
+            end
+
+            local no_streams = true
+            for id,stream in pairs(stream_infos) do
+                if stream and stream.file then
+                    if stream.frame_buffer then
+                        local p = stream.frame_buffer
+                        while p do
+                            sort_and_write(stream, p)
+                            p = p.next
                         end
-                        stream.file:flush()
-                        stream.file:close()
-                        twappend("File [" .. stream.filename .. "] generated OK!\n")
-                        stream.file = nil
-                        no_streams = false
+                        stream.frame_buffer = nil
+                        stream.frame_buffer_size = 0
                     end
-                end
-                
-                if no_streams then
-                    twappend("Not found any H.264 over RTP streams!")
+                    stream.file:flush()
+                    stream.file:close()
+                    twappend("File [" .. stream.filename .. "] generated OK!\n")
+                    stream.file = nil
+                    no_streams = false
                 end
             end
+
+            if no_streams then
+                twappend("Not found any H.264 over RTP streams!")
+            end
         end
-        
+
         function my_h264_tap.reset()
             -- do nothing now
         end
-        
+
         local function remove()
             my_h264_tap:remove()
         end
-        
+
         tw:set_atclose(remove)
-        
+
         local function export_h264(drop_frame)
             pgtw = ProgDlg.new("Export H264 to File Process", "Dumping H264 data to file...")
             first_run = true
@@ -424,15 +432,15 @@ do
             pgtw:close()
             stream_infos = nil
         end
-        
+
         local function export_all()
             export_h264(false)
         end
-        
+
         local function export_completed_frames()
             export_h264(true)
         end
-        
+
         tw:add_button("Export All", export_all)
         tw:add_button("Export Completed Frames (Drop uncompleted frames)", export_completed_frames)
     end
