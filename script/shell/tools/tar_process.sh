@@ -2,14 +2,14 @@
 #
 # 带有进度的解/打包
 #
-# document: http://www.gnu.org/software/tar/manual/html_section/tar_26.html#checkpoints
+# document: https://www.gnu.org/software/tar/manual/html_section/checkpoints.html#checkpoints
 #
-## gzip -l vopsAll.tar.gz 
+## gzip -l demo.tar.gz 
 #         compressed        uncompressed  ratio uncompressed_name
-#         2802583640          2812241920   0.3% vopsAll.tar
+#         2802583640          2812241920   0.3% demo.tar
 #
-## xz --robot -l vopsAll.tar.xz
-#name	vopsAll.tar.xz
+## xz --robot -l demo.tar.xz
+#name	demo.tar.xz
 #file	1	1	2679853216	2693939200	0.995	CRC64	0
 #totals	1	1	2679853216	2693939200	0.995	CRC64	0
 #
@@ -41,8 +41,14 @@ function tar_decompress() {
     echo "decompress ${tar_file##*/} complete"
 }
 
+# tar file name, file list to compress
 function tar_compress() {
-tar -xpf vopsAll.tar.gz --blocking-factor=10 --checkpoint=100 --checkpoint-action=dot --totals
-}
+    local tar_file=$1
+    shift
+    local file_to_tar="$@"
+    local total_size=$(du -sb ${file_to_tar} | awk '{sum+=$1} END {print sum}')
 
-tar_decompress vopsAll.tar.gz
+    local blocking_factor=$((total_size/512/100+1))
+
+    tar -zcpf ${tar_file} ${file_to_tar}  --blocking-factor=${blocking_factor} --checkpoint=1 --checkpoint-action="ttyout=pack ${tar_file##*/} %u%    \r" --totals
+}

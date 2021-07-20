@@ -34,6 +34,7 @@ function pre_install_taglist() {
     fi
 }
 
+# YouCompleteMe的安装对vim与cmake版本有要求
 function pre_install_YouCompleteMe() {
 
     # 通过gf升级vim与cmake
