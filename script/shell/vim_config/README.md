@@ -184,6 +184,59 @@ ctags简单应用
     - x: 是否展开tagbar标签栏，x展开，再一次x，则缩小标签栏
     - <F1>: 切换快捷键帮助页面，F1一次出现快捷键帮助页面，在一次F1，快捷键帮助页面隐藏。
 
+## clang_complete
+
+This plugin uses clang for accurately completing C and C++ code
+
+- 依赖
+    - vim 7.3+
+    - `yum install -y clang`
+    - 与OmniCppComplete 冲突
+- 安装方式
+    - 在[官网插件列表](http://www.vim.org/scripts/script.php?script_id=3302)下载`clang_complete.vmb`文件
+    - 在[作者github](https://github.com/xavierd/clang_complete)上clone
+        - `make` 生成`clang_complete.vmb`文件
+        - `make install` 安装插件，或者直接命令行`vim -c 'RmVimball clang_complete.vmb' -c 'q'`进行安装
+- 说明文档 `doc/clang_complete.txt`
+- 配置实例
+    ```
+    " clang complete
+    " 自动选择第一个匹配项但不插入到代码中
+    let g:clang_auto_select = 1
+    " 在->. ., ::后自动补全
+    let g:clang_complete_auto = 1
+    " 发现错误之后打开QuickFix窗口
+    let g:clang_complete_copen = 1
+    "高亮警告和错误
+    let g:clang_hl_errors = 1
+    " 插入第一个补全后关闭预览窗口
+    let g:clang_close_preview = 1
+    " 开启对C++11的编译支持
+    let g:clang_user_options = '-std=c++11'
+    " 设定clang库路径
+    let g:clang_library_path = '/usr/lib64/llvm/libclang.so'
+    " 补全预处理指令，宏和常数，默认为0，不补全
+    let g:clang_complete_macros = 1
+    " 补全代码模式，比如循环等，默认为0，不补全
+    let g:clang_complete_patterns = 1
+    " <C-]>跳转到声明
+    let g:clang_jumpto_declaration_key = "<C-]>"
+    " <C-w>]在预览窗口中打开声明
+    let g:clang_jumpto_declaration_in_preview_key = "<C-w>]"
+    " <C-t>回跳
+    let g:clang_jumpto_back_key = "<C-t>"
+    " 使用UltiSnips进行代码片段补全
+    let g:clang_snippets = 1
+    let g:clang_snippets_engine = 'ultisnips'
+    ```
+- 编译选项文件`.clang_complete`
+    ```
+    -DDEBUG
+    -include ../config.h
+    -I../common
+    `pkg-config gtk+-2.0 --cflags`
+    ```
+
 ## auto-pairs 插件
 
 https://github.com/jiangmiao/auto-pairs

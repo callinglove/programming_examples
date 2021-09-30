@@ -45,7 +45,7 @@ Plugin 'majutsushi/tagbar'
 Plugin 'jiangmiao/auto-pairs'
 
 " 自动补全提示插件
-Plugin 'Valloric/YouCompleteMe'
+Plugin 'ycm-core/YouCompleteMe'
 Plugin 'rdnetto/YCM-Generator', { 'branch': 'stable'}
 
 call vundle#end()
@@ -119,6 +119,37 @@ let g:tagbar_ctags_bin='/usr/bin/ctags'
 let g:tagbar_width=30
 " 在某些情况下自动打开tagbar
 "autocmd BufReadPost *.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()
+
+
+" ===========================clang complete===================================
+" clang complete
+" 自动选择第一个匹配项但不插入到代码中
+let g:clang_auto_select = 1
+" 在->. ., ::后自动补全
+let g:clang_complete_auto = 1
+" 发现错误之后打开QuickFix窗口
+let g:clang_complete_copen = 1
+"高亮警告和错误
+let g:clang_hl_errors = 1
+" 插入第一个补全后关闭预览窗口
+let g:clang_close_preview = 1
+" 开启对C++11的编译支持
+let g:clang_user_options = '-std=c++11'
+" 设定clang库路径
+let g:clang_library_path = '/usr/lib64/llvm/libclang.so'
+" 补全预处理指令，宏和常数，默认为0，不补全
+let g:clang_complete_macros = 1
+" 补全代码模式，比如循环等，默认为0，不补全
+let g:clang_complete_patterns = 1
+" <C-]>跳转到声明
+let g:clang_jumpto_declaration_key = "<C-]>"
+" <C-w>]在预览窗口中打开声明
+let g:clang_jumpto_declaration_in_preview_key = "<C-w>]"
+" <C-t>回跳
+let g:clang_jumpto_back_key = "<C-t>"
+" 使用UltiSnips进行代码片段补全
+let g:clang_snippets = 1
+let g:clang_snippets_engine = 'ultisnips'
 
 
 " ===========================YouCompleteMe config=============================
