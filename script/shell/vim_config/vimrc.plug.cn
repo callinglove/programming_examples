@@ -1,0 +1,41 @@
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/plugged')
+
+" Make sure you use single quotes
+
+" 状态行增强插件
+Plug 'https://github.com.cnpmjs.org/vim-airline/vim-airline.git'
+
+" 目录树插件
+Plug 'https://github.com.cnpmjs.org/preservim/nerdtree.git'
+
+" 函数列表插件 displays the tags of the current file in a sidebar
+Plug 'https://github.com.cnpmjs.org/yegappan/taglist.git'
+Plug 'https://github.com.cnpmjs.org/preservim/tagbar.git'
+
+" 自动匹配括号、引号等插件
+Plug 'https://github.com.cnpmjs.org/jiangmiao/auto-pairs.git'
+
+if has('python3')
+    " python自动补全
+    Plug 'https://github.com.cnpmjs.org/davidhalter/jedi-vim.git'
+
+    " Python-mode, a Python IDE for Vim
+    Plug 'https://github.com.cnpmjs.org/python-mode/python-mode.git'
+endif
+
+" cmake
+Plug 'https://github.com.cnpmjs.org/vhdirk/vim-cmake.git', { 'frozen': 1 }
+
+" c/c++自动补全
+" Plug 'https://github.com.cnpmjs.org/Rip-Rip/clang_complete.git'
+Plug 'https://github.com.cnpmjs.org/justmao945/vim-clang.git'
+
+" 自动补全提示插件
+" Plug 'https://github.com.cnpmjs.org/ycm-core/YouCompleteMe', { 'branch': 'origin/legacy-vim' }
+" Plug 'https://github.com.cnpmjs.org/rdnetto/YCM-Generator', { 'branch': 'stable'}
+
+" Initialize plugin system
+call plug#end()

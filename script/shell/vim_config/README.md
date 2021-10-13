@@ -156,6 +156,8 @@ map <F2> :NERDTreeToggle<CR>
 
 ## taglist 插件
 
+- https://github.com/universal-ctags/ctags
+
 ctags简单应用
 
 - Ctrl + ] 跳转到变量或函数的定义处，或者用命令
@@ -184,7 +186,30 @@ ctags简单应用
     - x: 是否展开tagbar标签栏，x展开，再一次x，则缩小标签栏
     - <F1>: 切换快捷键帮助页面，F1一次出现快捷键帮助页面，在一次F1，快捷键帮助页面隐藏。
 
-## clang_complete
+## 自动补全
+
+vim自动补全
+
+| 按键           | 补全对象           |
+|----------------|--------------------|
+| Ctrl-X Ctrl-F  | 文件名             |
+| Ctrl-X Ctrl-L  | 整行               |
+| Ctrl-X Ctrl-D  | 宏定义 (包括包含文件里的) |
+| Ctrl-X Ctrl-I  | 当前文件以及所包含的文件  |
+| Ctrl-X Ctrl-K  | 字典文件内的单词          |
+| Ctrl-X Ctrl-T  | 同义词词典文件内的单词    |
+| Ctrl-X Ctrl-]  | 标签                      |
+| Ctrl-X Ctrl-V  | Vim命令行                 |
+| Ctrl-X Ctrl-O  | 使用Vim自带的Omni completion |
+| Ctrl-N         | 下一个匹配项              |
+| Ctrl-P         | 上一个匹配项              |
+| Ctrl-A         | 重复上一次插入的文本      |
+
+### auto-pairs 插件
+
+https://github.com/jiangmiao/auto-pairs
+
+### clang_complete
 
 This plugin uses clang for accurately completing C and C++ code
 
@@ -237,11 +262,36 @@ This plugin uses clang for accurately completing C and C++ code
     `pkg-config gtk+-2.0 --cflags`
     ```
 
-## auto-pairs 插件
+### YouCompleteMe 插件
 
-https://github.com/jiangmiao/auto-pairs
+#### 安装
 
-## YouCompleteMe 插件
+```
+git clone -b legacy-vim https://github.com.cnpmjs.org/ycm-core/YouCompleteMe
+cd YouCompleteMe
+sed -i 's#https://github.com#https://github.com.cnpmjs.org#' .gitmodules
+git submodule sync --recursive
+git submodule update --init
+cd third_party/ycmd/
+sed -i 's#https://github.com#https://github.com.cnpmjs.org#' .gitmodules
+git submodule sync --recursive
+git submodule update --init
+cd third_party/
+find . -name ".gitmodules" | xargs sed -i 's#https://github.com#https://github.com.cnpmjs.org#'
+cd ../
+git submodule sync --recursive
+git submodule update --init --recursive
+
+yum install gcc-c++ cmake vim8 python3
+yum install mono-complete golang nodejs java-1.8.0-openjdk
+# 使用系统自带的libclang，在编译时下载的话，url已经不存在了
+yum install clang-devel
+
+cd ~/.vim/plugged/YouCompleteMe
+sed -i 's#https://github.com#https://hub.fastgit.org#' third_party/ycmd/build.py
+python3 install.py --system-libclang --clang-completer --go-completer
+```
+
 
 参考:
 - [YouCompleteMe 中容易忽略的配置](https://zhuanlan.zhihu.com/p/33046090)

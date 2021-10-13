@@ -1,0 +1,68 @@
+:set number             " 显示行号
+:set nolist
+":set list               " 显示Tab和换行符^I和$显示
+:set cursorline         "设置光标所在行的行识线 boolean (default off)
+:set hlsearch           " 启用高亮搜索 boolean (default off)
+:syntax on              " 启用语法高亮
+
+set tabstop=4       " 设定tab长度为4
+set softtabstop=4   " 使得按退格键时可以一次删掉 4 个空格
+set shiftwidth=4    " 设定 << 和 >> 命令移动时的宽度为 4
+set expandtab       " 将tab键替换成空格
+
+" python代码缩进PEP8风格
+au BufNewFile,BufRead *.py,*pyw
+  \ set tabstop=4 |
+  \ set softtabstop=4 |
+  \ set shiftwidth=4 |
+  \ set textwidth=79 |
+  \ set expandtab |
+  \ set autoindent |
+  \ set fileformat=unix
+
+if filereadable(expand("~/.vim/vimrc.plug.cn"))
+    source ~/.vim/vimrc.plug.cn
+    source ~/.vim/vimrc.plug.settings
+endif
+
+" ==========================新建文件添加文件标题===============================
+autocmd BufNewFile *.sh,*.py,*.c,*.h,*.cpp exec ":call SetFileHeaderComment()"
+
+func s:SetCommentLine(pre, comment)
+    normal o
+    call setline(line("."), a:pre.a:comment)
+endfunc
+
+func s:SetCommonComment(pre)
+    call s:SetCommentLine(a:pre, " @file        : ".expand("%"))
+    call s:SetCommentLine(a:pre, " @author      : ")
+    call s:SetCommentLine(a:pre, " @date        : ".strftime("%c"))
+    " call s:SetCommentLine(a:pre, " Last Modified: ".strftime("%Y-%m-%d %H:%M:%S"))
+    call s:SetCommentLine(a:pre, " @remark ")
+    call s:SetCommentLine(a:pre, " @note ")
+endfunc
+
+func SetFileHeaderComment()
+    if expand("%:e") == "sh"
+        call setline(line("."), "\#/bin/bash")
+        call s:SetCommonComment("\#")
+    elseif expand("%:e") == "py"
+        call setline(line("."), "\#!/usr/bin/env python")
+        call s:SetCommentLine("\#", " -*- coding: utf-8 -*-")
+        call s:SetCommonComment("\#")
+    elseif expand("%:e") == "c" || expand("%:e") == "cpp"
+        call setline(line("."), "/*")
+        call s:SetCommonComment(" *")
+        call s:SetCommentLine(" *", "/")
+    elseif expand("%:e") == "h"
+        let h_macro = "__".toupper(expand("%:r"))."_H_INCLUDED"
+        call setline(line("."), "#ifndef ".h_macro)
+        call s:SetCommentLine("", "#define ".h_macro)
+        call s:SetCommentLine("", "#endif   /* ".h_macro." */")
+        call cursor(2, len(getline(2)))
+        normal o
+        normal O
+        normal O
+    endif
+    normal o
+endfunc
