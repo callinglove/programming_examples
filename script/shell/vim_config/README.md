@@ -350,3 +350,7 @@ tab操作
 - gt  后一个tab
 - gT  前一个tab
 - :tabc
+
+## 参考
+
+https://github.com/wklken/k-vim

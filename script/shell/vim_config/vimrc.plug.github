@@ -15,6 +15,9 @@ Plug 'preservim/nerdtree'
 Plug 'yegappan/taglist'
 Plug 'preservim/tagbar'
 
+" Full path fuzzy file, buffer, mru, tag, ... finder for Vim.
+Plug 'kien/ctrlp.vim'
+
 " 自动匹配括号、引号等插件
 Plug 'jiangmiao/auto-pairs'
 

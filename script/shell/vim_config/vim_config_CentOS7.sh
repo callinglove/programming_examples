@@ -14,24 +14,46 @@
 
 vundle_git_url="https://github.com/VundleVim/Vundle.vim.git"
 gf_repo_rpm_url="http://mirror.ghettoforge.org/distributions/gf/gf-release-latest.gf.el7.noarch.rpm"
+my_raw_url="https://raw.staticdn.net/callinglove/programming_examples/master/script/shell/vim_config"
 
+function pre_install_dependencies() {
+    # curl raw下载依赖curl
+    command curl --version &>/dev/null || yum install -y curl
 
-function pre_install_Vundle() {
+    # git vim-plug依赖git
+    command git --version &>/dev/null || yum install -y git
 
-    ## 安装git
-    command git --help &>/dev/null || yum install -y git
+    # ctags taglist依赖ctags
+    command ctags --version &>/dev/null || yum install -y ctags
 
-    ## vim插件管理Vundle
-    git clone ${vundle_git_url} ~/.vim/bundle/Vundle.vim
+    # cmake vim-cmake依赖cmake
+    command cmake --version &>/dev/null || yum install -y cmake
+
+    # clang vim-clang依赖clang
+    command clang --version &>/dev/null || yum install -y clang
 }
 
-function pre_install_taglist() {
-    # taglist依赖ctags
-    ## 安装git
-    if ! command ctags --help &>/dev/null
-    then
-        yum install -y ctags
-    fi
+function install_config() {
+    # vimrc配置文件
+    curl -kfLo ~/.vim/vimrc --create-dirs "${my_raw_url}/vimrc"
+    curl -kfLo ~/.vim/vimrc.plug.cn --create-dirs "${my_raw_url}/vimrc.plug.cn"
+    curl -kfLo ~/.vim/vimrc.plug.settings --create-dirs "${my_raw_url}/vimrc.plug.settings"
+
+    # vim-plug插件
+    curl -kfLo ~/.vim/autoload/plug.vim --create-dirs https://raw.staticdn.net/junegunn/vim-plug/master/plug.vim
+    
+    # corporation主题
+    curl -kfLo ~/.vim/colors/corporation.vim --create-dirs "${my_raw_url}/colors/corporation.vim"
+
+    # vim-cmake插件
+    curl -kfLo ~/.vim/plugged/vim-cmake/plugin/cmake.vim --create-dirs "${my_raw_url}/plugged/vim-cmake/plugin/cmake.vim"
+    curl -kfLo ~/.vim/plugged/vim-cmake/doc/cmake.txt --create-dirs "${my_raw_url}/plugged/vim-cmake/doc/cmake.txt"
+    curl -kfLo ~/.vim/plugged/vim-cmake/doc/tags --create-dirs "${my_raw_url}/plugged/vim-cmake/doc/tags"
+}
+
+function pre_install_Vundle() {
+    ## vim插件管理Vundle
+    git clone ${vundle_git_url} ~/.vim/bundle/Vundle.vim
 }
 
 # YouCompleteMe的安装对vim与cmake版本有要求
@@ -59,20 +81,19 @@ function pre_install_YouCompleteMe() {
 }
 
 function main() {
-    pre_install_Vundle
-    pre_install_taglist
-    pre_install_YouCompleteMe
-
-    # 备份~/.vimrc
-    [[ -z "~/.vimrc" ]] && mv ~/.vimrc{,_bk}
-    wget https://raw.githubusercontent.com/callinglove/programming_examples/master/shell/vim_config/.vimrc -O ~/.vimrc
+    # 安装依赖
+    pre_install_dependencies
+    # 从git上下载配置以及预装插件
+    install_config
+    # 通过vim-plug下载插件
+    vim +PlugInstall +qall
     
-    # 安装插件
-    vim +PluginInstall +qall
-
-    # compile YCM
-    cd ~/.vim/bundle/YouCompleteMe
-    ./install.py --clang-completer
+    ## 安装插件
+    #vim +PluginInstall +qall
+    #
+    ## compile YCM
+    #cd ~/.vim/bundle/YouCompleteMe
+    #./install.py --clang-completer
 }
 
 main

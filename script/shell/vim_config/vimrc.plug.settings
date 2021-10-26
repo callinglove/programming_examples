@@ -95,6 +95,16 @@ if has_key(g:plugs, 'tagbar')
 endif
 
 
+if has_key(g:plugs, 'ctrlp.vim')
+"let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+"let g:ctrlp_custom_ignore = {
+"  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+"  \ 'file': '\v\.(exe|so|dll)$',
+"  \ 'link': 'some_bad_symbolic_links',
+"  \ }
+endif
+
+
 if has_key(g:plugs, 'vim-cmake')
     let g:cmake_export_compile_commands = 1
     let g:cmake_ycm_symlinks = 0

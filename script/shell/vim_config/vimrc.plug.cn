@@ -15,6 +15,9 @@ Plug 'https://github.com.cnpmjs.org/preservim/nerdtree.git'
 Plug 'https://github.com.cnpmjs.org/yegappan/taglist.git'
 Plug 'https://github.com.cnpmjs.org/preservim/tagbar.git'
 
+" Full path fuzzy file, buffer, mru, tag, ... finder for Vim.
+Plug 'https://github.com.cnpmjs.org/kien/ctrlp.vim.git'
+
 " 自动匹配括号、引号等插件
 Plug 'https://github.com.cnpmjs.org/jiangmiao/auto-pairs.git'
 
