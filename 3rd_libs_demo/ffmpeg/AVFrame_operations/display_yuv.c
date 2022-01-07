@@ -108,8 +108,31 @@ int main(int argc, char *argv[])
          * 
          * AVFrame的linesize保存了行采样的字节数，AVFrame却没有地方列采样的字节数
          * 
-         * 大华的PlaySDK中回调 PLAY_SetDecodeCallBack设置的回调函数 void (CALLBACK* fCBDecode)(LONG nPort, FRAME_DECODE_INFO* pFrameDecodeInfo, FRAME_INFO_EX* pFrameInfo, void* pUser);
+         * 大华的PlaySDK中回调 PLAY_SetDecodeCallBack设置的回调函数 
+         * void (CALLBACK* fCBDecode)(LONG nPort, FRAME_DECODE_INFO* pFrameDecodeInfo, FRAME_INFO_EX* pFrameInfo, void* pUser);
+         *
+         *  pAVFrame->format = AV_PIX_FMT_YUV420P;
+         *  pAVFrame->width  = pFrameDecodeInfo->nWidth[0];
+         *  pAVFrame->height = pFrameDecodeInfo->nHeight[0];
+         *  pAVFrame->linesize[0] = pFrameDecodeInfo->nStride[0];
+         *  pAVFrame->linesize[1] = pFrameDecodeInfo->nStride[1];
+         *  pAVFrame->linesize[2] = pFrameDecodeInfo->nStride[2];
+         *  if (av_frame_get_buffer(pAVFrame, 0) < 0)
+         *  {
+         *      return;
+         *  }
+         *  
+         *  for (int i = 0; i < 3; ++i)
+         *  {
+         *      memcpy(pAVFrame->data[0], 
+         *          pFrameDecodeInfo->pVideoData[0], 
+         *          pFrameDecodeInfo->nStride[0] * pFrameDecodeInfo->nHeight[0]);
+         *  }
          * 
+         *  linesize[0] 每行Y元素字节偏移数，也可以理解为保存一行Y元素占用的空间，
+         *  1. 由于字节对齐，linesize[0]一般>=width
+         *  2. 由于各库的实现不同，每行Y元素字节偏移数并不相同，经测试大华PlaySDK的偏移要比ffmpeg的大
+         *  3. av_frame_get_buffer在linesize[0]为零时，自动填充linesize数组，不为零时，则根据赋值情况来分配空间
          */
         fread(pFrameYUV->data[0], 1, y_size, yuv_fp);
         fread(pFrameYUV->data[1], 1, y_size / 4, yuv_fp);

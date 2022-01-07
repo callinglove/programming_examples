@@ -48,6 +48,7 @@ function set_mysql() {
         sleep 2
 
         # 没有这个文件或者密码错误,rm -rvf  /var/lib/mysql,然后systemctl restart mysqld
+        # 8.0.17
         temp_pw=$(grep 'temporary password' /var/log/mysqld.log | awk '{print $NF}' | tail -1)
         mysql -uroot -p"$temp_pw" --connect-expired-password << EOF
 set global validate_password.policy=LOW;

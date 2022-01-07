@@ -44,7 +44,7 @@ endfunc
 
 func SetFileHeaderComment()
     if expand("%:e") == "sh"
-        call setline(line("."), "\#/bin/bash")
+        call setline(line("."), "\#!/bin/bash")
         call s:SetCommonComment("\#")
     elseif expand("%:e") == "py"
         call setline(line("."), "\#!/usr/bin/env python")

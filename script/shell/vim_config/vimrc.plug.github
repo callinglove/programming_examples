@@ -32,8 +32,8 @@ endif
 Plug 'vhdirk/vim-cmake', { 'frozen': 1 }
 
 " c/c++自动补全
-" Plug 'Rip-Rip/clang_complete'
-Plug 'justmao945/vim-clang'
+Plug 'Rip-Rip/clang_complete', { 'do': 'make install'}
+" Plug 'justmao945/vim-clang'
 
 " " 自动补全提示插件
 " Plug 'ycm-core/YouCompleteMe', { 'branch': 'origin/legacy-vim' }

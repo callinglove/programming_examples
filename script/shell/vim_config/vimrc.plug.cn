@@ -33,8 +33,8 @@ endif
 Plug 'https://github.com.cnpmjs.org/vhdirk/vim-cmake.git', { 'frozen': 1 }
 
 " c/c++自动补全
-" Plug 'https://github.com.cnpmjs.org/Rip-Rip/clang_complete.git'
-Plug 'https://github.com.cnpmjs.org/justmao945/vim-clang.git'
+Plug 'https://github.com.cnpmjs.org/Rip-Rip/clang_complete.git', { 'do': 'make install'}
+" Plug 'https://github.com.cnpmjs.org/justmao945/vim-clang.git'
 
 " 自动补全提示插件
 " Plug 'https://github.com.cnpmjs.org/ycm-core/YouCompleteMe', { 'branch': 'origin/legacy-vim' }

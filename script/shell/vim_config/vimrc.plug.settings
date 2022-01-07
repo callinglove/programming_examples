@@ -105,6 +105,12 @@ if has_key(g:plugs, 'ctrlp.vim')
 endif
 
 
+if has_key(g:plugs, 'auto-pairs')
+    " 把ENTER键映射为换行并缩进，默认为1, 这里设置为0，避免与clang_complete冲突
+    let g:AutoPairsMapCR = 0
+endif
+
+
 if has_key(g:plugs, 'vim-cmake')
     let g:cmake_export_compile_commands = 1
     let g:cmake_ycm_symlinks = 0
@@ -132,14 +138,17 @@ if has_key(g:plugs, 'clang_complete')
     let g:clang_complete_macros = 1
     " 补全代码模式，比如循环等，默认为0，不补全
     let g:clang_complete_patterns = 1
+
+    " 避免和ctrl+],ctrl+t原有的功能冲突
     " <C-]>跳转到声明
-    let g:clang_jumpto_declaration_key = "<C-]>"
+    let g:clang_jumpto_declaration_key = "<a-d>"
+    " <C-t>回跳
+    let g:clang_jumpto_back_key = "<a-t>"
+
     " <C-w>]在预览窗口中打开声明
     let g:clang_jumpto_declaration_in_preview_key = "<C-w>]"
-    " <C-t>回跳
-    let g:clang_jumpto_back_key = "<C-t>"
     " 使用UltiSnips进行代码片段补全
-    let g:clang_snippets = 1
+    let g:clang_snippets = 0
     let g:clang_snippets_engine = 'ultisnips'
 endif
 

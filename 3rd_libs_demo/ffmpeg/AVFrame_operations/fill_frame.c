@@ -6,7 +6,6 @@
 
 int main() {
 
-
     for (int i = 0; i < AV_PIX_FMT_NB; ++i) {
         AVFrame *pAVFrame = av_frame_alloc();
         if (NULL == pAVFrame)

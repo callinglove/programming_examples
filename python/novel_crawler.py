@@ -6,11 +6,15 @@
 import os
 import re
 import json
+import time
 import logging
 from urllib.parse import urljoin
 from collections import namedtuple
 from bs4 import BeautifulSoup
 import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 Chapter = namedtuple('Chapter', ['idx', 'url', 'title'])
 
@@ -58,6 +62,7 @@ class NovelCrawler():
             if os.path.exists(str(chapter.idx)+".txt"):
                 continue
             print(chapter)
+            # time.sleep(5)
             try:
                 chapter_content = self._get_html_content(chapter.url)
                 soup_text = BeautifulSoup(chapter_content, "lxml")
@@ -114,7 +119,7 @@ class NovelCrawler():
 
     
 def main():  
-    crawler = NovelCrawler("http://www.xbiquge.la/22/22288/index.html")
+    crawler = NovelCrawler("https://www.ddxs.cc/ddxs/188074/")
     crawler.run()
     
     
