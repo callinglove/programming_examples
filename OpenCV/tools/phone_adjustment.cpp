@@ -15,14 +15,14 @@ void on_mouse(int event,int x,int y,int flags,void *ustc)//event鼠标事件代�
     static Point pre_pt(-1,-1);//初始坐标  
     static Point cur_pt(-1,-1);//实时坐标  
     char temp[16];  
-    if (event == CV_EVENT_LBUTTONDOWN)//左键按下，读取初始坐标，并在图像上该点处划圆  
+    if (event == EVENT_LBUTTONDOWN)//左键按下，读取初始坐标，并在图像上该点处划圆  
     {
         pre_pt = Point(x,y);
         points.push_back(cv::Point2f(pre_pt));
 
         // sprintf(temp,"(%d,%d)",x,y);
         // putText(img,temp,pre_pt,FONT_HERSHEY_SIMPLEX,0.5,Scalar(0,0,0,255),1,8);//在窗口上显示坐标
-        circle(img, pre_pt, 5, Scalar(0,0,255), CV_FILLED, CV_AA, 0);//划圆  
+        circle(img, pre_pt, 5, Scalar(0,0,255), FILLED, LINE_AA, 0);//划圆
         imshow("img", img);
 
         // std::cout << "[" << x << ", " << y << "]" << std::endl;
@@ -99,8 +99,8 @@ void image_ajustment()
     }
 
     std::vector< cv::Point2f > dst_points;
-    int width = ((points[1].x + points[3].x) / 2) - ((points[0].x + points[2].x) / 2);
-    int height = ((points[2].y + points[3].y) / 2) - ((points[0].y + points[1].y) / 2);
+    int width = 1920;//((points[1].x + points[3].x) / 2) - ((points[0].x + points[2].x) / 2);
+    int height = 1080;//((points[2].y + points[3].y) / 2) - ((points[0].y + points[1].y) / 2);
     dst_points.push_back(Point2f(0, 0));
     dst_points.push_back(Point2f(width, 0));
     dst_points.push_back(Point2f(0, height));
