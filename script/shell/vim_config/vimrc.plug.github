@@ -31,6 +31,9 @@ endif
 " cmake
 Plug 'vhdirk/vim-cmake', { 'frozen': 1 }
 
+"golang
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
 " c/c++自动补全
 Plug 'Rip-Rip/clang_complete', { 'do': 'make install'}
 " Plug 'justmao945/vim-clang'
